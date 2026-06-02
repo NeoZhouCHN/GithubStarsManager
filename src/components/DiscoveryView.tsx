@@ -936,7 +936,7 @@ export const DiscoveryView: React.FC = React.memo(() => {
   }, [safeDiscoveryChannels]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-x-hidden min-w-0">
       {/* Mobile Tab Navigation */}
       <MobileTabNav
         channels={mobileChannels}
@@ -981,14 +981,14 @@ export const DiscoveryView: React.FC = React.memo(() => {
           />
         </div>
 
-        <div className="flex-1 flex flex-col min-h-0 min-w-0 relative">
+        <div className="flex-1 flex flex-col min-h-0 min-w-0 relative overflow-x-hidden">
           {/* 顶部工具栏 - 随滚动显示/隐藏 */}
           <div 
             className={`flex-shrink-0 transition-transform duration-300 ease-in-out z-10 ${
               isToolbarVisible ? 'translate-y-0' : '-translate-y-full opacity-0 pointer-events-none'
             }`}
           >
-            <div className="bg-white dark:bg-panel-dark/80 backdrop-blur-xl rounded-2xl border border-black/[0.06] dark:border-white/[0.04] p-3.5 sm:p-4 mb-4 shadow-sm shadow-gray-200/50 dark:shadow-gray-900/20">
+            <div className="bg-white dark:bg-panel-dark/80 backdrop-blur-xl rounded-2xl border border-black/[0.06] dark:border-white/[0.04] p-3.5 sm:p-4 mb-4 shadow-sm shadow-gray-200/50 dark:shadow-gray-900/20 overflow-hidden">
               {/* 第一行：标题和刷新按钮 */}
               <div className="flex items-center justify-between gap-2 mb-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
