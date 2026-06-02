@@ -467,7 +467,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between p-3 md:p-4 border-b border-black/[0.06] dark:border-white/[0.04] flex-shrink-0">
+          <div className="flex items-center justify-between p-3 md:p-4 border-b border-black/[0.06] dark:border-white/[0.04] flex-shrink-0" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
             <div className="flex items-center space-x-3">
               <img
                 src={repository.owner.avatar_url}
