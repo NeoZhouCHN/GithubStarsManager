@@ -65,7 +65,7 @@ export const LoginScreen: React.FC = () => {
   return (
     <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-blue-50 to-indigo-100' : 'bg-gradient-to-br from-gray-900 to-gray-800'} flex items-center justify-center p-4 transition-colors duration-300`}>
       {/* Theme and Language Toggle */}
-      <div className="fixed top-4 right-4 flex items-center gap-2 z-50">
+      <div className="fixed right-4 flex items-center gap-2 z-50" style={{ top: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}>
         {/* Language Toggle */}
         <div className="flex items-center bg-white dark:bg-panel-dark rounded-lg shadow-md border border-black/[0.06] dark:border-white/[0.04] overflow-hidden">
           <button

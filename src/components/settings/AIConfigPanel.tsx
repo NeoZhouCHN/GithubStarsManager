@@ -645,26 +645,26 @@ Repository information:
                 : 'border-black/[0.06] dark:border-white/[0.04] hover:border-black/[0.06] dark:hover:border-white/[0.08]'
             }`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start space-x-3">
                 <input
                   type="radio"
                   name="activeAI"
                   checked={config.id === activeAIConfig}
                   onChange={() => setActiveAIConfig(config.id)}
-                  className="w-4 h-4 text-gray-700 dark:text-text-secondary bg-light-surface border-black/[0.06] focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-white/[0.04] dark:border-white/[0.04]"
+                  className="w-4 h-4 mt-1 flex-shrink-0 text-gray-700 dark:text-text-secondary bg-light-surface border-black/[0.06] focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-white/[0.04] dark:border-white/[0.04]"
                 />
-                <div>
-                  <h4 className="font-medium text-gray-900 dark:text-text-primary flex items-center">
-                    {config.name}
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-medium text-gray-900 dark:text-text-primary flex items-center flex-wrap gap-1">
+                    <span>{config.name}</span>
                     {config.useCustomPrompt && (
-                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-white/[0.04] dark:text-text-secondary">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-white/[0.04] dark:text-text-secondary">
                         <MessageSquare className="w-3 h-3 mr-1" />
                         {t('自定义提示词', 'Custom Prompt')}
                       </span>
                     )}
                   </h4>
-                  <p className="text-sm text-gray-500 dark:text-text-tertiary">
+                  <p className="text-sm text-gray-500 dark:text-text-tertiary break-all">
                     {(config.apiType || 'openai').toUpperCase()} • {config.baseUrl} • {config.model} • {t('并发数', 'Concurrency')}: {config.concurrency || 1}
                     {config.reasoningEffort ? ` • reasoning: ${config.reasoningEffort}` : ''}
                   </p>
@@ -678,26 +678,28 @@ Repository information:
                   )}
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-2">
+
+              <div className="flex items-center gap-2 ml-7">
                 <button
                   onClick={() => handleTest(config)}
                   disabled={testingId === config.id}
-                  className="p-2 rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors disabled:opacity-50"
                   title={t('测试连接', 'Test Connection')}
                 >
                   {testingId === config.id ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <TestTube className="w-4 h-4" />
+                    <TestTube className="w-3.5 h-3.5" />
                   )}
+                  <span>{t('测试', 'Test')}</span>
                 </button>
                 <button
                   onClick={() => handleEdit(config)}
-                  className="p-2 rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors"
                   title={t('编辑', 'Edit')}
                 >
-                  <Edit3 className="w-4 h-4" />
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>{t('编辑', 'Edit')}</span>
                 </button>
                 <button
                   onClick={async () => {
@@ -714,10 +716,11 @@ Repository information:
                       }
                     }
                   }}
-                  className="p-2 rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-900 dark:bg-white/[0.08] dark:text-text-primary hover:bg-gray-200 dark:hover:bg-white/[0.12] border border-transparent dark:border-white/[0.04] transition-colors"
                   title={t('删除', 'Delete')}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{t('删除', 'Delete')}</span>
                 </button>
               </div>
             </div>
