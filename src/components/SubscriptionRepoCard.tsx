@@ -294,9 +294,9 @@ export const SubscriptionRepoCard: React.FC<SubscriptionRepoCardProps> = ({ repo
 
   return (
     <>
-    <div 
+    <div
       onClick={handleCardClick}
-      className={`bg-white dark:bg-panel-dark border border-black/[0.06] dark:border-white/[0.04] p-5 transition-all duration-200 overflow-hidden ${
+      className={`bg-white dark:bg-panel-dark border border-black/[0.06] dark:border-white/[0.04] p-4 sm:p-5 transition-all duration-200 overflow-hidden w-full box-border ${
         desktopSafeMode
           ? 'rounded-lg hover:shadow-md hover:border-black/[0.06] dark:border-white/[0.04] dark:hover:border-black/[0.06] dark:border-white/[0.04] hover:-translate-y-0.5 cursor-pointer'
           : 'rounded-xl hover:shadow-lg hover:border-black/[0.06] dark:border-white/[0.04] dark:hover:border-black/[0.06] dark:border-white/[0.04] hover:-translate-y-0.5 cursor-pointer'
@@ -306,7 +306,7 @@ export const SubscriptionRepoCard: React.FC<SubscriptionRepoCardProps> = ({ repo
       onCut={(e) => e.preventDefault()}
       onSelect={(e) => e.preventDefault()}
     >
-      <div className="flex items-start gap-3 sm:gap-4">
+      <div className="flex items-start gap-3 sm:gap-4 min-w-0">
         {/* Rank badge */}
         <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-sm sm:text-lg ${rankBadgeClass}`}>
           {repo.rank}

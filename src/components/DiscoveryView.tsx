@@ -936,7 +936,7 @@ export const DiscoveryView: React.FC = React.memo(() => {
   }, [safeDiscoveryChannels]);
 
   return (
-    <div className="flex flex-col overflow-x-hidden min-w-0">
+    <div className="flex flex-col overflow-x-hidden min-w-0 w-full box-border">
       {/* Mobile Tab Navigation */}
       <MobileTabNav
         channels={mobileChannels}
@@ -1123,7 +1123,7 @@ export const DiscoveryView: React.FC = React.memo(() => {
           {/* 内容区域 */}
           <div 
             ref={scrollContainerRef}
-            className={`flex-1 overflow-y-auto space-y-4 pr-2 ${isDesktopSafeMode ? 'bg-white dark:bg-panel-dark' : ''}`}
+            className={`flex-1 overflow-y-auto overflow-x-hidden space-y-4 ${isDesktopSafeMode ? 'bg-white dark:bg-panel-dark' : ''}`}
           >
             {selectedDiscoveryChannel === 'search' && (
               <div className={isDesktopSafeMode
