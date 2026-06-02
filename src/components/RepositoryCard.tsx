@@ -10,7 +10,6 @@ import { GitHubApiService } from '../services/githubApi';
 import { formatDistanceToNow } from 'date-fns';
 import { RepositoryEditModal } from './RepositoryEditModal';
 import { ReadmeModal } from './ReadmeModal';
-import { FloatingTooltip } from './FloatingTooltip';
 import { shallow } from 'zustand/shallow';
 import { useDialog } from '../hooks/useDialog';
 
@@ -135,16 +134,6 @@ const RepositoryCardComponent: React.FC<RepositoryCardProps> = ({
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [readmeModalOpen, setReadmeModalOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  // 模态框打开时关闭 tooltip，防止闪烁
-  useEffect(() => {
-    if (readmeModalOpen || editModalOpen) {
-      setShowTooltip(false);
-    }
-  }, [readmeModalOpen, editModalOpen]);
-  const descTriggerRef = useRef<HTMLDivElement>(null);
-  const tooltipHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [unstarring, setUnstarring] = useState(false);
   const [showDragHint, setShowDragHint] = useState(false);
   const dragHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -188,9 +177,6 @@ const RepositoryCardComponent: React.FC<RepositoryCardProps> = ({
     return () => {
       if (dragHintTimeoutRef.current) {
         clearTimeout(dragHintTimeoutRef.current);
-      }
-      if (tooltipHideTimerRef.current) {
-        clearTimeout(tooltipHideTimerRef.current);
       }
     };
   }, []);
@@ -874,31 +860,13 @@ const RepositoryCardComponent: React.FC<RepositoryCardProps> = ({
         </div>
       </div>
 
-      {/* Description with Tooltip */}
+      {/* Description */}
       <div className="mb-4 flex-1">
-        <div
-          ref={descTriggerRef}
-          className="relative group"
-          onMouseEnter={() => { clearTimeout(tooltipHideTimerRef.current); setShowTooltip(true); }}
-          onMouseLeave={() => { tooltipHideTimerRef.current = setTimeout(() => setShowTooltip(false), 150); }}
-          onFocus={() => { clearTimeout(tooltipHideTimerRef.current); setShowTooltip(true); }}
-          onBlur={() => { tooltipHideTimerRef.current = setTimeout(() => setShowTooltip(false), 150); }}
-          onTouchStart={() => setShowTooltip((v) => !v)}
-          tabIndex={0}
+        <p
+          className="text-gray-800 dark:text-text-secondary text-[13px] leading-[1.625] line-clamp-3 mb-2"
         >
-          <p
-            className="text-gray-800 dark:text-text-secondary text-[13px] leading-[1.625] line-clamp-3 mb-2 transition-colors duration-200 hover:text-gray-900 dark:hover:text-text-primary rounded px-1 -mx-1 hover:bg-gray-50/50 dark:hover:bg-white/[0.02]"
-          >
-            {highlightSearchTerm(displayContent.content, searchQuery)}
-          </p>
-          <FloatingTooltip
-            content={highlightSearchTerm(displayContent.content, searchQuery)}
-            visible={showTooltip}
-            triggerRef={descTriggerRef}
-            onMouseEnter={() => clearTimeout(tooltipHideTimerRef.current)}
-            onMouseLeave={() => { tooltipHideTimerRef.current = setTimeout(() => setShowTooltip(false), 150); }}
-          />
-        </div>
+          {highlightSearchTerm(displayContent.content, searchQuery)}
+        </p>
 
         {/* 方案一：同时显示多个状态标签 */}
         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
