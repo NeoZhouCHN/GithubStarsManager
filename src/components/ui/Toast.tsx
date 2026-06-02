@@ -18,9 +18,9 @@ const iconMap = {
 };
 
 const bgMap = {
-  success: 'bg-gray-50 dark:bg-white/[0.04] border-status-green/30',
-  error: 'bg-gray-50 dark:bg-white/[0.04] border-status-red/30',
-  info: 'bg-gray-50 dark:bg-white/[0.04] border-gray-200 dark:border-white/[0.08]',
+  success: 'bg-white dark:bg-gray-800 border-status-green/40',
+  error: 'bg-white dark:bg-gray-800 border-status-red/40',
+  info: 'bg-white dark:bg-gray-800 border-gray-300 dark:border-white/[0.12]',
 };
 
 const iconColorMap = {
@@ -60,11 +60,12 @@ export const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration =
       role={type === 'error' ? 'alert' : 'status'}
       aria-live={type === 'error' ? 'assertive' : 'polite'}
       aria-atomic="true"
-      className="fixed top-4 right-4 z-[100] animate-in slide-in-from-top-2 fade-in duration-200"
+      className="fixed left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-4 z-[100] animate-in slide-in-from-top-2 fade-in duration-200"
+      style={{ top: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
     >
-      <div className={`flex items-center space-x-3 px-4 py-3 rounded-lg border shadow-lg ${bgMap[type]}`}>
+      <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl border-2 shadow-xl backdrop-blur-sm ${bgMap[type]}`}>
         <Icon className={`w-5 h-5 flex-shrink-0 ${iconColorMap[type]}`} aria-hidden="true" />
-        <p className="text-sm text-gray-900 dark:text-text-primary whitespace-pre-line">{message}</p>
+        <p className="text-sm font-medium text-gray-900 dark:text-text-primary whitespace-pre-line">{message}</p>
         <button
           onClick={onClose}
           aria-label={`${message} - close`}

@@ -80,11 +80,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   const dialogContent = (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center"
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center"
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onCancel}
       />
 
@@ -94,9 +94,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative w-full max-w-md mx-4 bg-white dark:bg-panel-dark dark:border dark:border-white/[0.04] rounded-xl shadow-xl"
+        className="relative w-full max-w-md mx-0 md:mx-4 bg-white dark:bg-panel-dark dark:border dark:border-white/[0.04] md:rounded-xl rounded-t-xl shadow-xl mb-0 md:mb-0"
+        style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
-        <div className="p-6">
+        <div className="p-5 md:p-6">
           <div className="flex items-start space-x-4">
             <div className={`flex-shrink-0 p-2 rounded-full ${
               type === 'danger' ? 'bg-status-red/10' : 'bg-brand-indigo/10'
@@ -116,7 +117,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3 px-6 py-4 bg-light-bg dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.04] rounded-b-xl">
+        <div className="flex justify-end space-x-3 px-5 py-4 md:px-6 bg-light-bg dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.04] md:rounded-b-xl">
           <button
             ref={cancelButtonRef}
             onClick={handleCancel}
