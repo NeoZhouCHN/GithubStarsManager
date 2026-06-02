@@ -1029,7 +1029,7 @@ export const DiscoveryView: React.FC = React.memo(() => {
               </div>
               
               {/* 第二行：筛选和操作按钮 */}
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap overflow-hidden">
                 {selectedDiscoveryChannel === 'trending' && (
             <div className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-gray-400 dark:text-text-tertiary" />

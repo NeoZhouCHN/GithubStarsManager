@@ -948,6 +948,17 @@ textarea::-webkit-resizer {
   input[type="text"] {
     font-size: 16px; /* Prevent iOS zoom */
   }
+
+  /* Prevent iOS select elements from overflowing */
+  select {
+    max-width: calc(100vw - 4rem);
+    min-width: 0;
+  }
+
+  /* Force all flex children to be shrinkable on mobile */
+  main * {
+    min-width: 0;
+  }
 }
 
 /* Print-friendly styles */
