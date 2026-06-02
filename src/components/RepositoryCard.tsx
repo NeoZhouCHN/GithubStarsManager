@@ -136,6 +136,13 @@ const RepositoryCardComponent: React.FC<RepositoryCardProps> = ({
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [readmeModalOpen, setReadmeModalOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  // 模态框打开时关闭 tooltip，防止闪烁
+  useEffect(() => {
+    if (readmeModalOpen || editModalOpen) {
+      setShowTooltip(false);
+    }
+  }, [readmeModalOpen, editModalOpen]);
   const descTriggerRef = useRef<HTMLDivElement>(null);
   const tooltipHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [unstarring, setUnstarring] = useState(false);

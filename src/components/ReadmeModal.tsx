@@ -374,7 +374,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     } else {
-      setShowToc(true);
+      setShowToc(window.innerWidth >= 768);
     }
   }, [isOpen]);
 
@@ -445,7 +445,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div
-        className="flex min-h-full items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity"
+        className="flex min-h-full items-end md:items-center justify-center md:p-4 bg-black bg-opacity-50 transition-opacity"
         onClick={handleBackdropClick}
       >
         <div
@@ -454,7 +454,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
           aria-modal="true"
           aria-labelledby="readme-modal-title"
           tabIndex={-1}
-          className="relative w-full bg-white dark:bg-panel-dark dark:border dark:border-white/[0.04] rounded-xl shadow-xl transform transition-all max-h-[90vh] flex flex-col"
+          className="relative w-full bg-white dark:bg-panel-dark dark:border dark:border-white/[0.04] md:rounded-xl rounded-t-xl shadow-xl transform transition-all md:max-h-[90vh] max-h-[100dvh] flex flex-col"
           style={{ maxWidth: '1130px' }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -467,7 +467,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
             </div>
           )}
 
-          <div className="flex items-center justify-between p-4 border-b border-black/[0.06] dark:border-white/[0.04] flex-shrink-0">
+          <div className="flex items-center justify-between p-3 md:p-4 border-b border-black/[0.06] dark:border-white/[0.04] flex-shrink-0">
             <div className="flex items-center space-x-3">
               <img
                 src={repository.owner.avatar_url}
@@ -483,7 +483,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1 flex-wrap justify-end">
               {readmeContent && !loading && (
                 isTranslated ? (
                   <>
@@ -652,7 +652,7 @@ export const ReadmeModal: React.FC<ReadmeModalProps> = ({
 
             <div
               ref={contentRef}
-              className={`flex-1 overflow-y-auto p-6 ${currentFontSize} select-text readme-scrollbar relative`}
+              className={`flex-1 overflow-y-auto overflow-x-auto p-4 md:p-6 ${currentFontSize} select-text readme-scrollbar relative`}
               onScroll={handleScroll}
             >
             {loading ? (
