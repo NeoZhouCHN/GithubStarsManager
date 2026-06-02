@@ -604,31 +604,31 @@ Repository information:
             )}
           </div>
 
-          <div className="flex space-x-3">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={handleSave}
-              className="flex items-center space-x-2 px-4 py-2 bg-brand-indigo text-white dark:bg-brand-indigo dark:text-white rounded-lg hover:bg-brand-hover transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-brand-indigo text-white dark:bg-brand-indigo dark:text-white rounded-lg hover:bg-brand-hover transition-colors"
             >
-              <Save className="w-4 h-4" />
+              <Save className="w-3.5 h-3.5" />
               <span>{t('保存', 'Save')}</span>
             </button>
             <button
               onClick={handleTestForm}
               disabled={testingForm}
-              className="flex items-center space-x-2 px-4 py-2 bg-brand-indigo text-white dark:bg-brand-indigo dark:text-white rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-50"
+              className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-brand-indigo text-white dark:bg-brand-indigo dark:text-white rounded-lg hover:bg-brand-hover transition-colors disabled:opacity-50"
             >
               {testingForm ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <TestTube className="w-4 h-4" />
+                <TestTube className="w-3.5 h-3.5" />
               )}
-              <span>{t('测试连接', 'Test Connection')}</span>
+              <span>{t('测试连接', 'Test')}</span>
             </button>
             <button
               onClick={resetForm}
-              className="flex items-center space-x-2 px-4 py-2 bg-light-surface hover:bg-gray-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] text-gray-900 dark:text-text-primary rounded-lg border border-black/[0.06] dark:border-white/[0.04] transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-light-surface hover:bg-gray-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] text-gray-900 dark:text-text-primary rounded-lg border border-black/[0.06] dark:border-white/[0.04] transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
               <span>{t('取消', 'Cancel')}</span>
             </button>
           </div>

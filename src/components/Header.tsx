@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, Calendar, Search, Moon, Sun, LogOut, RefreshCw, TrendingUp, GitFork } from 'lucide-react';
+import { Settings, Calendar, Search, Moon, Sun, LogOut, RefreshCw, TrendingUp, GitFork, Menu, X } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { GitHubApiService } from '../services/githubApi';
 import { useDialog } from '../hooks/useDialog';
@@ -147,7 +147,7 @@ export const Header: React.FC = () => {
 
    
   return (
-    <header className="bg-light-bg dark:bg-panel-dark border-b border-black/[0.06] dark:border-white/[0.04] sticky top-0 z-50 hd-drag lg:hd-drag relative">
+    <header className="bg-light-bg dark:bg-panel-dark border-b border-black/[0.06] dark:border-white/[0.04] sticky top-0 z-50 hd-drag lg:hd-drag relative" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo and Title */}
@@ -401,6 +401,29 @@ export const Header: React.FC = () => {
               </nav>
             </div>
           )}
+
+          {/* Mobile: Sync + Menu Toggle */}
+          <div className="flex items-center gap-1 md:hidden">
+            <button
+              onClick={handleSync}
+              disabled={isLoading}
+              className="p-2 rounded-lg hover:bg-light-surface dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+              title={t('同步', 'Sync')}
+            >
+              <RefreshCw className={`w-5 h-5 text-gray-700 dark:text-text-secondary ${isLoading ? 'animate-spin' : ''}`} />
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-light-surface dark:hover:bg-white/5 transition-colors"
+              aria-label={t('菜单', 'Menu')}
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-gray-700 dark:text-text-secondary" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-700 dark:text-text-secondary" />
+              )}
+            </button>
+          </div>
 
           {/* User Actions */}
           <div className="flex items-center gap-2 sm:gap-3 hd-btns lg:hd-btns">
