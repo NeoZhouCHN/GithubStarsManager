@@ -21,6 +21,25 @@ jobs:
           repository: AmintaCCCP/GithubStarsManager
           ref: main
 
+      - name: Disable web update prompts
+        run: |
+          cat > src/components/UpdateChecker.tsx <<'EOF'
+          import React from 'react';
+          import type { VersionInfo } from '../services/updateService';
+
+          interface UpdateCheckerProps {
+            onUpdateAvailable?: (version: VersionInfo) => void;
+          }
+
+          export const UpdateChecker: React.FC<UpdateCheckerProps> = () => null;
+          EOF
+
+          cat > src/components/UpdateNotificationBanner.tsx <<'EOF'
+          import React from 'react';
+
+          export const UpdateNotificationBanner: React.FC = () => null;
+          EOF
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
