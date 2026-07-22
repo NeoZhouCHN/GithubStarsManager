@@ -26,10 +26,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          base_ref="$(git rev-parse HEAD)"
           git remote add upstream https://github.com/AmintaCCCP/GithubStarsManager.git || true
           git fetch upstream main
-          if git merge upstream/main --no-edit --allow-unrelated-histories -X theirs; then
-            echo "changed=true" >> $GITHUB_OUTPUT
+          if git merge upstream/main --no-edit --no-ff --allow-unrelated-histories -X theirs; then
+            git checkout "$base_ref" -- .github/workflows
+            if ! git diff --cached --quiet; then
+              git commit --amend --no-edit
+            fi
+            if git diff --quiet "$base_ref" HEAD; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
           else
             git merge --abort || true
             echo "::error::Unable to merge upstream/main"
