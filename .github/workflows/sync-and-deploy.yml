@@ -2,8 +2,11 @@ name: Sync & Deploy
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 每天凌晨 2 点（UTC）自动同步
-  workflow_dispatch:      # 支持手动触发
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -25,13 +28,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/AmintaCCCP/GithubStarsManager.git || true
           git fetch upstream main
-          if git merge upstream/main --no-edit --allow-unrelated-histories; then
+          if git merge upstream/main --no-edit --allow-unrelated-histories -X theirs; then
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Upstream merged successfully"
           else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Merge conflict, skipping push"
-            git merge --abort
+            git merge --abort || true
+            echo "::error::Unable to merge upstream/main"
+            exit 1
           fi
 
       - name: Push
@@ -40,7 +42,7 @@ jobs:
 
   build-and-deploy:
     needs: sync
-    if: always()
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
