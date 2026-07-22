@@ -143,12 +143,12 @@ jobs:
           replaceOnce(
             'src/components/SubscriptionRepoCard.tsx',
             'className={\`bg-white dark:bg-panel-dark border border-black/[0.06] dark:border-white/[0.04] p-5 transition-all duration-200 \${',
-            'data-discovery-card\n      className={\`bg-white dark:bg-panel-dark border border-black/[0.06] dark:border-white/[0.04] p-4 sm:p-5 transition-all duration-200 overflow-hidden w-full box-border \${'
+            'data-discovery-card="true"\n      className={\`bg-white dark:bg-panel-dark border border-black/[0.06] dark:border-white/[0.04] p-4 sm:p-5 transition-all duration-200 overflow-hidden w-full box-border \${'
           );
           replaceOnce(
             'src/components/SubscriptionRepoCard.tsx',
             'className="flex items-start gap-3 sm:gap-4">',
-            'className="flex items-start gap-3 sm:gap-4 min-w-0"'
+            'className="flex items-start gap-3 sm:gap-4 min-w-0">'
           );
           replaceOnce(
             'src/components/SubscriptionRepoCard.tsx',
