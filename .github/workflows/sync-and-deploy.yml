@@ -71,8 +71,8 @@ jobs:
 
           function removeDescriptionTooltips(path) {
             const source = fs.readFileSync(path, 'utf8');
-            const withoutImport = source.replace(/import { FloatingTooltip } from '\\.\\/FloatingTooltip';\\n/, '');
-            const withoutTooltips = withoutImport.replace(/\\n\\s*<FloatingTooltip[\\s\\S]*?\\/>\\n/g, '\\n');
+            const withoutImport = source.replace(/import { FloatingTooltip } from '\.\/FloatingTooltip';\n/, '');
+            const withoutTooltips = withoutImport.replace(/\n\s*<FloatingTooltip[\s\S]*?\/>\n/g, '\n');
             if (withoutTooltips === source) {
               throw new Error('Expected FloatingTooltip usage not found in ' + path);
             }
