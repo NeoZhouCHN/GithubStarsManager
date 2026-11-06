@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v2)
+      - name: Restore mobile web fixes (v3)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v2 (audited 2026-11-06 against upstream v0.9.0).
+          // Mobile web fixes v3 (v2 + header safe-area rework, 2026-11-06).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -100,13 +100,6 @@ jobs:
             'index.html',
             '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
             '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />\n    <meta name="theme-color" content="#0d1117" />\n    <meta name="apple-mobile-web-app-capable" content="yes" />\n    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />\n    <meta name="apple-mobile-web-app-title" content="Stars Manager" />\n    <meta name="format-detection" content="telephone=no" />'
-          );
-
-          // --- Safe area: Header (reworked; upstream renamed classes, still no safe-area) ---
-          replaceOnce(
-            'src/components/Header.tsx',
-            '<header className="linear-header sticky top-0 z-(--app-z-header) hd-drag lg:hd-drag relative">',
-            '<header className="linear-header sticky top-0 z-(--app-z-header) hd-drag lg:hd-drag relative" style={{ paddingTop: \'env(safe-area-inset-top)\' }}>'
           );
 
           // --- Safe area: LoginScreen top-right controls (reworked; class order changed) ---
@@ -254,6 +247,17 @@ jobs:
             .app-discovery-card .truncate {
               min-width: 0;
             }
+          }
+
+          /* Standalone PWA: upstream 0.9.0 sizes its fixed header from the
+             --app-header-height token (currently 3.375rem). Grow the token by the
+             top safe-area inset so the header clears the notch / Dynamic Island.
+             (Padding the header element instead overflows its fixed-height box
+             and paints the header content over the next row — seen in the iOS
+             standalone app.) --app-header-offset derives from this token, so
+             sticky elements below the header stay aligned. */
+          :root {
+            --app-header-height: calc(3.375rem + env(safe-area-inset-top, 0px));
           }
           EOF
 
