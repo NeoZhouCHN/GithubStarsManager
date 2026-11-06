@@ -298,7 +298,7 @@ jobs:
           (async () => {
             const html = fs.readFileSync('dist/index.html', 'utf8');
             const urls = new Set();
-            const re = /(?:src|href)="(\.\/)?([^"]+)"/g;
+            const re = /(?:src|href)="(\.\/)?([^\"]+)"/g;
             let m;
             while ((m = re.exec(html)) !== null) {
               const u = m[2];
