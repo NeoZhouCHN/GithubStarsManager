@@ -272,6 +272,76 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Regenerate service worker precache
+        run: |
+          node <<'EOF'
+          // Regenerate dist/sw.js with a correct precache manifest.
+          // The vite-plugin-pwa generateSW integration collects no entries under
+          // the current upstream toolchain (Vite 8 / rolldown): the deployed
+          // service worker precached only icon.png + manifest.webmanifest while
+          // its navigation route points at index.html. This post-build step
+          // rebuilds the service worker from the finished dist instead: the app
+          // shell is exactly what dist/index.html references (entry chunks,
+          // vendors, css) plus the root statics.
+          const fs = require('fs');
+          const crypto = require('crypto');
+          const { generateSW } = require('workbox-build');
+
+          function md5(path) {
+            return crypto.createHash('md5').update(fs.readFileSync(path)).digest('hex');
+          }
+
+          (async () => {
+            const html = fs.readFileSync('dist/index.html', 'utf8');
+            const urls = new Set();
+            const re = /(?:src|href)="(\.\/)?([^\"]+)"/g;
+            let m;
+            while ((m = re.exec(html)) !== null) {
+              const u = m[2];
+              if (/^(https?:|data:|#)/.test(u)) continue;
+              if (u === 'sw.js') continue;
+              urls.add(u);
+            }
+            ['index.html', 'registerSW.js', 'manifest.webmanifest', 'icon.png', 'icon.svg'].forEach((f) => {
+              if (fs.existsSync('dist/' + f)) urls.add(f);
+            });
+
+            const entries = [...urls]
+              .filter((u) => {
+                try {
+                  return fs.statSync('dist/' + u).isFile();
+                } catch (e) {
+                  return false;
+                }
+              })
+              .map((u) => ({
+                url: u,
+                revision: u.includes('assets/') ? null : md5('dist/' + u),
+              }));
+            console.log('app-shell entries:', entries.length);
+
+            const { count, warnings } = await generateSW({
+              swDest: 'dist/sw.js',
+              globDirectory: 'dist',
+              globPatterns: [],
+              additionalManifestEntries: entries,
+              skipWaiting: true,
+              clientsClaim: true,
+              cleanupOutdatedCaches: true,
+              navigateFallback: 'index.html',
+              maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+            });
+            (warnings || []).forEach((w) => console.warn(w));
+            console.log('precache entries written:', count);
+            if (count < 10) {
+              throw new Error('precache regeneration produced too few entries: ' + count);
+            }
+          })().catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
+          EOF
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
