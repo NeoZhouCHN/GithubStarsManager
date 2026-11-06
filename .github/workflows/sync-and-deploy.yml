@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v4)
+      - name: Restore mobile web fixes (v5)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v4 (v3 + header mobile menu marker, 2026-11-06).
+          // Mobile web fixes v5 (v4 + header wrapper height fix, 2026-11-07).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -274,6 +274,15 @@ jobs:
           .linear-header-inner {
             height: 3.375rem;
             margin-top: env(safe-area-inset-top, 0px);
+          }
+
+          /* 1b) The header's inner layout wrapper (.app-header-inner around the
+             .linear-header-inner row) is height:100% of the grown header in
+             upstream's final parity block, so the row's margin-top safe-area
+             shift overflows the header box and leaves a full safe-area of dead
+             space under the buttons. Let the wrapper size to the row instead. */
+          .app-header-inner {
+            height: auto;
           }
 
           /* 2) The upstream 0.9.0 mobile nav is a w-56 (14rem) Radix dropdown
