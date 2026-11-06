@@ -35,9 +35,22 @@ jobs:
           EOF
 
           cat > src/components/UpdateNotificationBanner.tsx <<'EOF'
-          import React from 'react';
+          import { useEffect } from 'react';
 
-          export const UpdateNotificationBanner: React.FC = () => null;
+          // Diagnostic build (2026-11-07): logs which JS bundle is actually
+          // running on the device, so a stale service-worker cache can be told
+          // apart from a layout bug. Renders nothing.
+          export const UpdateNotificationBanner: React.FC = () => {
+            useEffect(() => {
+              try {
+                const css = [...document.styleSheets].map((s) => s.href || 'inline').join(' ');
+                console.log('[banner-diag] bundle LIVE v7 (workflow v8) css:', css);
+              } catch (e) {
+                console.log('[banner-diag] bundle LIVE v7 (workflow v8)');
+              }
+            }, []);
+            return null;
+          };
           EOF
 
       - name: Restore mobile web fixes (v7)
