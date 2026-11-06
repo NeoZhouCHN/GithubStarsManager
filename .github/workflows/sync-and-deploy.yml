@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v3)
+      - name: Restore mobile web fixes (v4)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v3 (v2 + header safe-area rework, 2026-11-06).
+          // Mobile web fixes v4 (v3 + header mobile menu marker, 2026-11-06).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -201,6 +201,12 @@ jobs:
             '<DialogTitle className="text-lg font-semibold text-foreground dark:text-foreground">',
             '<DialogTitle className="min-w-0 truncate text-lg font-semibold text-foreground dark:text-foreground">'
           );
+
+          // --- Header mobile menu: tag the Radix dropdown panel so the appended
+          // CSS can stretch it full-width (upstream 0.9.0 ships it as w-56).
+          replaceOnce('src/components/Header.tsx',
+            '<DropdownMenuContent align="end" className="w-56 md:hidden">',
+            '<DropdownMenuContent align="end" data-header-mobile-menu="" className="w-56 md:hidden">');
           EOF
 
           cat >> src/index.css <<'EOF'
@@ -258,6 +264,47 @@ jobs:
              sticky elements below the header stay aligned. */
           :root {
             --app-header-height: calc(3.375rem + env(safe-area-inset-top, 0px));
+          }
+
+          /* Mobile layout fixes (NEO feedback 2026-11-06, patch v4):
+             1) Header buttons vertically center inside the grown header token, so
+                in standalone they ride up against the Dynamic Island. Pin the
+                inner row to the bottom token-height of the header: buttons keep a
+                full safe-area of dead space above them. */
+          .linear-header-inner {
+            height: 3.375rem;
+            margin-top: env(safe-area-inset-top, 0px);
+          }
+
+          /* 2) The upstream 0.9.0 mobile nav is a w-56 (14rem) Radix dropdown
+             anchored to the hamburger button; NEO's previous build had a
+             full-width menu bar under the header. Stretch the panel across the
+             viewport (same 1rem gutters as the old bar). */
+          [data-radix-popper-content-wrapper]:has(> [data-header-mobile-menu]) {
+            left: 1rem !important;
+            right: 1rem !important;
+          }
+          [data-header-mobile-menu] {
+            width: 100% !important;
+          }
+
+          /* 3) The repository controls bar loses its mobile stacking in upstream
+             0.9.0 (an index.css parity block forces row + space-between at every
+             width), which centers the AI-analysis button in a squished half row,
+             indents the display-content radios and clips the stats line at the
+             right edge. Restore the stacked full-width layout on small screens. */
+          @media (max-width: 639px) {
+            .app-repository-controls {
+              flex-direction: column;
+              align-items: stretch;
+              justify-content: flex-start;
+            }
+            .app-repository-controls > div:last-child {
+              align-items: flex-start;
+            }
+            .app-repository-controls .app-context-row-copy {
+              overflow-wrap: break-word;
+            }
           }
           EOF
 
