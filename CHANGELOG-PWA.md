@@ -7,7 +7,7 @@
 
 - **上游仓库**: https://github.com/AmintaCCCP/GithubStarsManager
 - **你的仓库**: https://github.com/NeoZhouCHN/GithubStarsManager
-- **线上地址**: https://github-stars.pages.dev (Cloudflare Pages)
+- **线上地址**: https://github-stars-8zu.pages.dev (Cloudflare Pages)
 - **部署方式**: GitHub Actions 自动同步上游 + 自动构建 + 自动部署到 Cloudflare Pages
 - **同步频率**: 每天凌晨 2 点 (UTC) 自动同步，支持手动触发
 
