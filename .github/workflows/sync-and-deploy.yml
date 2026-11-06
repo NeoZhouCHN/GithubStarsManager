@@ -35,17 +35,30 @@ jobs:
           EOF
 
           cat > src/components/UpdateNotificationBanner.tsx <<'EOF'
-          import React from 'react';
+          import { useEffect } from 'react';
 
-          export const UpdateNotificationBanner: React.FC = () => null;
+          // Diagnostic build (2026-11-07): logs which JS bundle is actually
+          // running on the device, so a stale service-worker cache can be told
+          // apart from a layout bug. Renders nothing.
+          export const UpdateNotificationBanner: React.FC = () => {
+            useEffect(() => {
+              try {
+                const css = [...document.styleSheets].map((s) => s.href || 'inline').join(' ');
+                console.log('[banner-diag] bundle LIVE v7 (workflow v8) css:', css);
+              } catch (e) {
+                console.log('[banner-diag] bundle LIVE v7 (workflow v8)');
+              }
+            }, []);
+            return null;
+          };
           EOF
 
-      - name: Restore mobile web fixes (v6)
+      - name: Restore mobile web fixes (v7)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v6 (v5 + header element height fix, 2026-11-07).
+          // Mobile web fixes v7 (v6 + diagnostic header height, 2026-11-07).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -323,6 +336,15 @@ jobs:
             .app-repository-controls .app-context-row-copy {
               overflow-wrap: break-word;
             }
+          }
+
+          /* === v7 diagnostics + definitive header height (2026-11-07) ===
+             The red bottom border is a temporary version marker: if it is
+             visible, the app is running THIS build. The height below uses
+             !important so no upstream parity rule can override it. */
+          header.linear-header {
+            height: calc(3.375rem + env(safe-area-inset-top, 0px)) !important;
+            border-bottom: 3px solid #ff3b30 !important;
           }
           EOF
 
