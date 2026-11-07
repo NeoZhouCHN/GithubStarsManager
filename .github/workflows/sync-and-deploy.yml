@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v10)
+      - name: Restore mobile web fixes (v11)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v10 (v9 + AI config card marker for overflow fix, 2026-11-07).
+          // Mobile web fixes v11 (v10 + overlay safe-area markers, 2026-11-07).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -207,6 +207,17 @@ jobs:
           replaceOnce('src/components/settings/AIConfigPanel.tsx',
             'className={`p-4 rounded-lg border transition-colors ${',
             'data-ai-config-card="" className={`p-4 rounded-lg border transition-colors ${');
+
+          // Overlay audit: tag the shared sheet/dialog content primitives so the
+          // appended CSS can add safe-area top padding to every top-anchored
+          // full-screen overlay at once (release sheet, chat sheets, README and
+          // other fullscreen dialogs all slide under the Dynamic Island).
+          replaceOnce('src/components/ui/sheet.tsx',
+            "'fixed z-50 flex flex-col gap-4 bg-card p-5 text-card-foreground shadow-dialog transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500',",
+            "'app-sheet-content fixed z-50 flex flex-col gap-4 bg-card p-5 text-card-foreground shadow-dialog transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500',");
+          replaceOnce('src/components/RepositoryChatSheet.tsx',
+            '<div className="px-3 pr-12">',
+            '<div className="repo-chat-panel-header px-3 pr-12">');
 
           replaceOnce('src/components/Header.tsx',
             '<DropdownMenuContent align="end" className="w-56 md:hidden">',
@@ -403,6 +414,35 @@ jobs:
             [data-ai-config-card] p {
               overflow-wrap: anywhere;
             }
+          }
+
+          /* === v11: full-screen overlays vs the iOS status bar (2026-11-07) ===
+             Audit of every top-anchored overlay in upstream 0.9.0: side sheets
+             (release viewer, chat history, repository chat) and fullscreen
+             dialogs (README, repository card, plugin pages/marketplace) all
+             anchor at top:0 / inset:0 with no safe-area handling, so their
+             titles and close buttons slide under the Dynamic Island in the
+             standalone app. Centered dialogs, the main header (v9), menus and
+             toasts do not reach the status bar. Fix at the shared layer:
+             side="right" sheets are full-height right panels identified by
+             Tailwind's inset-y-0 (dialog content never carries that class), and
+             fullscreen dialogs carry .app-dialog-fullscreen. The panel itself
+             stays full-bleed; only its inner top padding grows by the safe-area
+             inset, so content starts below the island. Adding the inset
+             unconditionally is safe in a browser tab, where env() computes 0. */
+          .app-sheet-content.inset-y-0 {
+            padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
+          }
+          .app-dialog-content.app-dialog-fullscreen {
+            padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
+          }
+          /* The repository chat sheet zeroes its own padding (p-0) and draws its
+             own header, so pad that header instead of the sheet box. */
+          .app-sheet-content.inset-y-0.p-0 {
+            padding-top: 0;
+          }
+          .app-sheet-content.inset-y-0.p-0 .repo-chat-panel-header {
+            padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
           }
           EOF
 
