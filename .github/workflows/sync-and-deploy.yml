@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v9)
+      - name: Restore mobile web fixes (v10)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v9 (GPT scheme: safe-area into wrapper padding, 2026-11-07).
+          // Mobile web fixes v10 (v9 + AI config card marker for overflow fix, 2026-11-07).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -202,8 +202,12 @@ jobs:
             '<DialogTitle className="min-w-0 truncate text-lg font-semibold text-foreground dark:text-foreground">'
           );
 
-          // --- Header mobile menu: tag the Radix dropdown panel so the appended
-          // CSS can stretch it full-width (upstream 0.9.0 ships it as w-56).
+          // --- AI settings: mark the config card so the appended CSS can fix its
+          // mobile overflow (header row cannot shrink, delete button off-screen).
+          replaceOnce('src/components/settings/AIConfigPanel.tsx',
+            'className={`p-4 rounded-lg border transition-colors ${',
+            'data-ai-config-card="" className={`p-4 rounded-lg border transition-colors ${');
+
           replaceOnce('src/components/Header.tsx',
             '<DropdownMenuContent align="end" className="w-56 md:hidden">',
             '<DropdownMenuContent align="end" data-header-mobile-menu="" className="w-56 md:hidden">');
@@ -375,6 +379,30 @@ jobs:
             margin-top: 0 !important;
             margin-bottom: 0 !important;
             flex-shrink: 0;
+          }
+
+          /* === v10: AI config card overflow (2026-11-07) ===
+             The config card header is a fixed row: identity block on the left,
+             three icon buttons on the right. On narrow screens the identity
+             block cannot shrink (long name + badge + unbroken URL line), so the
+             delete button is pushed past the right edge. Mobile-only: allow the
+             header row to wrap so the buttons drop to their own right-aligned
+             row, let the identity block shrink, and break the long detail line
+             anywhere. Desktop layout untouched. */
+          @media (max-width: 639px) {
+            [data-ai-config-card] > div {
+              flex-wrap: wrap;
+              row-gap: 0.5rem;
+            }
+            [data-ai-config-card] > div > div {
+              min-width: 0;
+            }
+            [data-ai-config-card] > div > div:last-child {
+              margin-left: auto;
+            }
+            [data-ai-config-card] p {
+              overflow-wrap: anywhere;
+            }
           }
           EOF
 
