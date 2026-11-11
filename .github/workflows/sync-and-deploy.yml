@@ -45,7 +45,7 @@ jobs:
           node <<'EOF'
           const fs = require('fs');
 
-        // Mobile web fixes v12 (upstream pinned to v0.9.0 + full-assets precache sweep, 2026-11-12).
+          // Mobile web fixes v12 (upstream pinned to v0.9.0 + full-assets precache sweep, 2026-11-12).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
