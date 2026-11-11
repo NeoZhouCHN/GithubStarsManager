@@ -40,7 +40,7 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v12)
+      - name: Restore mobile web fixes (v13)
         run: |
           node <<'EOF'
           const fs = require('fs');
@@ -444,6 +444,21 @@ jobs:
           .app-sheet-content.inset-y-0.p-0 .repo-chat-panel-header {
             padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
           }
+
+          /* === v13: overlay close buttons vs the status bar (2026-11-12) ===
+             v11 padded the overlay boxes, but their close buttons are
+             absolutely positioned relative to the panel, so they stayed
+             inside the safe area while the titles moved down (NEO screenshot:
+             chat sheet X touching the battery). Push both families' close
+             buttons down by the same inset. Dialog padding var is 1.25rem
+             per the final parity rules; fullscreen dialogs only — centered
+             dialogs never reach the status bar. */
+          .app-sheet-content.inset-y-0 > button {
+            top: calc(1rem + env(safe-area-inset-top, 0px));
+          }
+          .app-dialog-content.app-dialog-fullscreen > .app-dialog-close {
+            top: calc(1.25rem + env(safe-area-inset-top, 0px));
+          }
           EOF
 
       - name: Setup Node.js
@@ -554,4 +569,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=github-stars
+          command: pages deploy dist --project-name=github-stars --branch=main
