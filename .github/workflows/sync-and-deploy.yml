@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AmintaCCCP/GithubStarsManager
-          ref: main
+          ref: v0.9.0
 
       - name: Disable web update prompts
         run: |
@@ -40,12 +40,12 @@ jobs:
           export const UpdateNotificationBanner: React.FC = () => null;
           EOF
 
-      - name: Restore mobile web fixes (v11)
+      - name: Restore mobile web fixes (v12)
         run: |
           node <<'EOF'
           const fs = require('fs');
 
-          // Mobile web fixes v11 (v10 + overlay safe-area markers, 2026-11-07).
+          // Mobile web fixes v12 (upstream pinned to v0.9.0 + full-assets precache sweep, 2026-11-12).
           // v1 targeted upstream v0.6.2; upstream has since absorbed or superseded
           // many fixes in its Radix redesign. Each op below was verified against
           // current upstream source: kept = anchor intact, reworked = same intent,
@@ -494,6 +494,24 @@ jobs:
             ['index.html', 'registerSW.js', 'manifest.webmanifest', 'icon.png', 'icon.svg'].forEach((f) => {
               if (fs.existsSync('dist/' + f)) urls.add(f);
             });
+            // Runtime sweep: statically imported chunks live in the entry's
+            // module graph, not in index.html. The bootstrap dynamically loads
+            // the per-language, per-namespace locale JSON chunks; if one is
+            // missing from the precache, the standalone app's navigation
+            // fallback answers the chunk request with index.html, the dynamic
+            // import throws, and startup dies on the fallback error page
+            // (observed 2026-11-12 after upstream's post-0.9.0 main drift
+            // restructured the i18n loading). Precache the whole dist/assets
+            // JS/CSS set plus the locale JSONs so no startup-path request can
+            // fall into the fallback.
+            function sweep(dir, prefix) {
+              for (const name of fs.readdirSync(dir)) {
+                const p = dir + '/' + name;
+                if (fs.statSync(p).isDirectory()) sweep(p, prefix + name + '/');
+                else if (/\.(js|css|json)$/.test(name)) urls.add(prefix + name);
+              }
+            }
+            sweep('dist/assets', 'assets/');
 
             const entries = [...urls]
               .filter((u) => {
