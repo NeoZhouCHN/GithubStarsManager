@@ -535,6 +535,22 @@ jobs:
             }
             sweep('dist/assets', 'assets/');
 
+            // Drop the legacy (nomodule) bundles from the precache: they
+            // are only ever loaded by pre-module browsers, never by the
+            // modern Safari/WebKit this app runs in, but at 270 files they
+            // double the precache to ~23 MB / 548 files. A service worker
+            // update only takes over once the whole precache has
+            // downloaded, and an oversized install that keeps getting
+            // interrupted (app closed on the fallback error page) leaves
+            // the standalone app stuck on its old worker — observed
+            // 2026-11-14, when the fixed worker was live but the phone
+            // still could not finish installing it. The legacy files stay
+            // deployed and are fetched on demand if a legacy browser ever
+            // asks for them.
+            for (const u of [...urls]) {
+              if (u.includes('-legacy')) urls.delete(u);
+            }
+
             const entries = [...urls]
               .filter((u) => {
                 try {
