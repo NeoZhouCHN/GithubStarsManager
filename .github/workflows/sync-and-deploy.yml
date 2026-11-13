@@ -506,7 +506,14 @@ jobs:
               if (u === 'sw.js') continue;
               urls.add(u);
             }
-            ['index.html', 'registerSW.js', 'manifest.webmanifest', 'icon.png', 'icon.svg'].forEach((f) => {
+            // Do NOT precache 'index.html' by name: Cloudflare Pages answers
+            // /index.html with a 308 redirect to /, the only non-200 URL in
+            // the manifest, and a redirected response can fail the whole
+            // precache install in WebKit — leaving the standalone app stuck
+            // on an old service worker whose chunks later deploys deleted
+            // (load-failure recurrence, 2026-11-13). The root document is
+            // precached as './' below instead (direct 200, no redirect).
+            ['registerSW.js', 'manifest.webmanifest', 'icon.png', 'icon.svg'].forEach((f) => {
               if (fs.existsSync('dist/' + f)) urls.add(f);
             });
             // Runtime sweep: statically imported chunks live in the entry's
@@ -540,6 +547,9 @@ jobs:
                 url: u,
                 revision: u.includes('assets/') ? null : md5('dist/' + u),
               }));
+            // Root document entry: same content as dist/index.html, but
+            // precached under './' so its fetch never hits the 308.
+            entries.push({ url: './', revision: md5('dist/index.html') });
             console.log('app-shell entries:', entries.length);
 
             const { count, warnings } = await generateSW({
@@ -550,7 +560,7 @@ jobs:
               skipWaiting: true,
               clientsClaim: true,
               cleanupOutdatedCaches: true,
-              navigateFallback: 'index.html',
+              navigateFallback: './',
               maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
             });
             (warnings || []).forEach((w) => console.warn(w));
